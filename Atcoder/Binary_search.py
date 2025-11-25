@@ -1,3 +1,4 @@
+#二分探索
 def Binary_search(dat, value):
     left, right=0, len(dat)-1
     while(left<=right):
