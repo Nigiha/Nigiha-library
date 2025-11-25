@@ -1,4 +1,4 @@
-#セグメント木(0-index)
+#セグメント木(0-index) 最小値
 #===セグメント木を生成===
 def seg_tree(n):#nはデータの数
     unit=0#問題によって変える
@@ -24,4 +24,9 @@ def result(a, b):
 def result_sub(a, b, k, r, l):
     if r<=a or b<=l:
         return unit
-    
+    elif a<r and l<b:
+        return dat[k]
+    else:
+        vl=result_sub(a, b, k*2+1, l, (l+r)//2)
+        vr=result_sub(a, b, k*2+2, (l+r)//2, r)
+        return(min(vl, vr))
