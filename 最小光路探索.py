@@ -7,9 +7,9 @@ plt.rcParams["backend"]="qtagg"
 def refractive_index(line, row):
     n1=1.0
     n2=1.2
-    if row<=50:
+    if row<=5:
         return n1
-    elif row>50:
+    elif row>5:
         return n2
 #頂点(line, row)の配列上での位置
 def locate(line, row):
@@ -18,8 +18,8 @@ def locate(line, row):
 inf=1000.0
 
 #重き付き有向グラフ
-N_line=100
-N_row=100
+N_line=10
+N_row=10
 N_node=N_line*N_row
 edge=[(1,0), (3,1), (2,1), (3,2), (1,1), (2,3), (2,1), (1,3), (0,1)] #辺の方向
 gragh=[[inf]*N_node for _ in range(N_node)] #gragh[辺の始点][辺の終点],値は辺の光学的距離
