@@ -7,10 +7,12 @@ plt.rcParams["backend"]="qtagg"
 def refractive_index(line, row):
     n1=1.0
     n2=3.0
-    if line<=50:
-        return n1
+    boundary=[50]
+    if line<=boundary[0]:
+        return n1, boundary
     else:
-        return n2
+        return n2, boundary
+
 #頂点(line, row)の配列上での位置
 def locate(line, row):
     return N_row*line+row
@@ -32,14 +34,15 @@ for node in range(N_node): #すべての頂点について
         terminal=locate(line+dy, row+dx)
         if line+dy<N_line and row+dx<N_row: #(N_line)×(N_row)を超えない範囲で
             actual_distance=np.sqrt(dx**2+dy**2)
-            optical_distance=actual_distance*refractive_index(line, row) #光路長=距離×屈折率
+            refractive=refractive_index(line, row)
+            optical_distance=actual_distance*refractive[0] #光路長=距離×屈折率
             gragh[node].append([terminal, optical_distance])
 
 #最短経路探索(ダイクストラ法)
 def dijkstra(gragh, start, end): #graghの頂点startからendまでの最短経路をもとめるダイクストラ法
     cost=[inf]*len(gragh) #各頂点までの最小光路長
     visit=[0]*len(gragh) #startからの最短経路未探索は0,探索済みは1
-    route=[-1]*len(gragh)#経路復元用(termまでの最適経路のtermの1つ前の頂点を記録)
+    path_data=[-1]*len(gragh)#経路復元用(termまでの最適経路のtermの1つ前の頂点を記録)
     cost[start]=0 #sart地点までの(光学的)距離0
     heap=[(0, start)] #起点選択用優先度つきキュー
     search=start #起点
@@ -49,7 +52,7 @@ def dijkstra(gragh, start, end): #graghの頂点startからendまでの最短経
             dist=gragh[search][i][1] #辺のコスト
             if cost[term]>cost[search]+dist: #古いコスト>新しいコストなら
                 cost[term]=cost[search]+dist #コストを更新
-                route[term]=search #経路を記録(termまでの最適経路のtermの1つ前の頂点を記録)
+                path_data[term]=search #経路を記録(termまでの最適経路のtermの1つ前の頂点を記録)
                 heapq.heappush(heap, (cost[term], term)) #次の起点の候補に追加
         visit[search]=1 #searchは探索済み
 
@@ -64,21 +67,32 @@ def dijkstra(gragh, start, end): #graghの頂点startからendまでの最短経
                 break
 
     print(cost[end])
-    return route
+    return path_data
 
 #経路復元
-def route_restore(route): #経路を終点から復元
-    route_x=[]
-    route_y=[]
+def path_restore(path): #経路を終点から復元
+    path_x=[]
+    path_y=[]
     i=N_node-1
     while i>=0:
         x=i%N_row
         y=i//N_row
-        route_x.append(x)
-        route_y.append(y)
-        i=route[i]
-    return(route_x, route_y)
+        path_x.append(x)
+        path_y.append(y)
+        i=path[i]
+    return(path_x, path_y)
 
+#図をプロット
+def plot(x, y, boundary):
+    plt.figure
+    for i in range(len(boundary)):
+        plt.axhline(y=boundary[i]+0.5, color="red", linestyle="--", label="boundary"+str(i))
+    plt.plot(x, y, marker=".", markersize=2, label="Light Path")
+    plt.title("Fermat's Principle")
+    plt.legend
+    plt.grid()
+    plt.show()
 
-
-route=dijkstra(gragh, 0, N_node-1)     
+path=dijkstra(gragh, 0, N_node-1)
+x, y=path_restore(path)
+plot(x, y, boundary=refractive_index(0,0)[1])
