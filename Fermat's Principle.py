@@ -5,13 +5,13 @@ plt.rcParams["backend"]="qtagg"
 
 #屈折率
 def refractive_index(line, row):
-    n1=1.0
-    n2=3.0
-    boundary=[50]
-    if line<=boundary[0]:
-        return n1, boundary
-    else:
-        return n2, boundary
+    n=[3.0, 2.5, 2.0, 1.5, 1.0]
+    boundary=[0, 20, 40, 60, 80] #0は入れる,100は入れない
+    for i in range(len(boundary)-1):
+        if boundary[i]<=line<boundary[i+1]:
+            return n[i], boundary
+    return n[-1], boundary
+    
 
 #頂点(line, row)の配列上での位置
 def locate(line, row):
@@ -85,11 +85,11 @@ def path_restore(path): #経路を終点から復元
 #図をプロット
 def plot(x, y, boundary):
     plt.figure
-    for i in range(len(boundary)):
-        plt.axhline(y=boundary[i]+0.5, color="red", linestyle="--", label="boundary"+str(i))
+    for i in range(1, len(boundary)):
+        plt.axhline(y=boundary[i]+0.5, color="red", linestyle="--")
     plt.plot(x, y, marker=".", markersize=2, label="Light Path")
     plt.title("Fermat's Principle")
-    plt.legend
+    plt.legend()
     plt.grid()
     plt.show()
 
