@@ -5,8 +5,8 @@ plt.rcParams["backend"]="qtagg"
 
 #屈折率
 def refractive_index(line, row):
-    n=[3.0, 2.5, 2.0, 1.5, 1.0]
-    boundary=[0, 20, 40, 60, 80] #0は入れる,100は入れない
+    n=[1.8, 1.6, 1.4, 1.2, 1.0]
+    boundary=[0, 60, 120, 180, 240] #0は入れる,1000は入れない
     for i in range(len(boundary)-1):
         if boundary[i]<=line<boundary[i+1]:
             return n[i], boundary
@@ -20,10 +20,22 @@ def locate(line, row):
 inf=float("INF")
 
 #重き付き有向グラフ
-N_line=101
-N_row=101
+N_line=301
+N_row=301
 N_node=N_line*N_row
-list_edge=[(1,0), (3,1), (2,1), (3,2), (1,1), (2,3), (2,1), (1,3), (0,1)] #辺の方向
+list_edge = [
+    (1,0), (0,1),
+    (1,1),
+    (2,1), (1,2),
+    (3,1), (1,3),
+    (3,2), (2,3),
+    (4,1), (1,4),
+    (4,3), (3,4),
+    (5,1), (1,5),
+    (5,2), (2,5),
+    (5,3), (3,5),
+    (5,4), (4,5)
+] #辺の方向
 gragh=[[] for _ in range(N_node)] #隣接グラフ[辺の始点(N_node)][(辺の終点,光学的距離),...]
 for node in range(N_node): #すべての頂点について
     line=node//N_row
@@ -84,7 +96,8 @@ def path_restore(path): #経路を終点から復元
 
 #図をプロット
 def plot(x, y, boundary):
-    plt.figure
+    plt.figure()
+    plt.gca().invert_yaxis()
     for i in range(1, len(boundary)):
         plt.axhline(y=boundary[i]+0.5, color="red", linestyle="--")
     plt.plot(x, y, marker=".", markersize=2, label="Light Path")
