@@ -5,12 +5,12 @@ plt.rcParams["backend"]="qtagg"
 
 #屈折率
 def refractive_index(line, row):
-    n=[1.8, 1.6, 1.4, 1.2, 1.0]
     boundary=[0, 60, 120, 180, 240] #0は入れる,1000は入れない
+    n=[2.6, 2.2, 1.8, 1.4, 1.0]
     for i in range(len(boundary)-1):
         if boundary[i]<=line<boundary[i+1]:
-            return n[i], boundary
-    return n[-1], boundary
+            return n[i], boundary, n
+    return n[-1], boundary, n
     
 
 #頂点(line, row)の配列上での位置
@@ -95,11 +95,14 @@ def path_restore(path): #経路を終点から復元
     return(path_x, path_y)
 
 #図をプロット
-def plot(x, y, boundary):
+def plot(x, y, boundary, n):
     plt.figure()
     plt.gca().invert_yaxis()
-    for i in range(1, len(boundary)):
-        plt.axhline(y=boundary[i]+0.5, color="red", linestyle="--")
+    for i in boundary[1:len(boundary)]:
+        plt.axhline(y=i+0.5, color="red", linestyle="--")
+    boundary.append(N_line)
+    for i in range(len(boundary)-1):
+        plt.text(N_row*9//10, (boundary[i]+boundary[i+1])//2, "n="+str(n[i]), color="red")
     plt.plot(x, y, marker=".", markersize=2, label="Light Path")
     plt.title("Fermat's Principle")
     plt.legend()
@@ -108,4 +111,4 @@ def plot(x, y, boundary):
 
 path=dijkstra(gragh, 0, N_node-1)
 x, y=path_restore(path)
-plot(x, y, boundary=refractive_index(0,0)[1])
+plot(x, y, boundary=refractive_index(0,0)[1], n=refractive_index(0,0)[2])
