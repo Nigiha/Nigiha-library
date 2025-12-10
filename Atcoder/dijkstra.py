@@ -1,4 +1,4 @@
-#最短経路探索(ダイクストラ法)
+#最短経路探索(ダイクストラ法)　graghの形式は隣接リスト[辺の始点(N_node)][(辺の終点,光学的距離),...]
 def dijkstra(gragh, start, end): #graghの頂点startからendまでの最短経路をもとめるダイクストラ法
     import heapq
     inf=float("INF")
