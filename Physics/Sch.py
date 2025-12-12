@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams["backend"]="qtagg"
 
-fac=2*5.224*10**3/6.582**2
-a=5.224*8.288**2*10**(-1)
+fac=241.2
+a=35.88
+b=100.0
 
 x_max=0.5
 dx=0.001
@@ -13,7 +14,7 @@ N=len(x)
 def g(E, x, psi, dpsi):
     return -fac*(E-Pot(x))*psi
 def Pot(x):
-    return a*x**2+x**4
+    return (1/2)*a*x**2+b*x**4
 
 def RungeKutta(E): #4次ルンゲクッタ
     psi=np.zeros(N)
@@ -52,6 +53,7 @@ def plot(E, psi):
     for i in range(len(E)):
         ax.plot(x, psi[i]+E[i], label="E_"+str(i)+"={:.3f}".format(E[i]))
     ax.plot(x, Pot(x), "-", c="black", label="Potential")
+    plt.ylabel("Energy [eV]")
     ax.legend()
     plt.show()
 
