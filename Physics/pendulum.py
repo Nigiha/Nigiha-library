@@ -3,7 +3,11 @@ import matplotlib.pyplot as plt
 
 x=np.arange(0, 50, 0.001)
 def f(y, dydx, x):
-    return -np.sin(y) #関数
+    return -np.sin(y) #微分方程式
+
+x=np.arange(0, 50, 0.001)
+def g(y, dydx, x):
+    return -y
 
 def RK4_secondoder(f, x):
     dx=x[1]-x[0]
@@ -26,5 +30,8 @@ def RK4_secondoder(f, x):
     return y, dydx
 
 plt.figure()
-plt.plot(x, RK4_secondoder(f, x)[0])
+plt.title("pendulum solution (l/g=1)")
+plt.plot(x, RK4_secondoder(f, x)[0], color="red", label="actual_solution")
+plt.plot(x, RK4_secondoder(g, x)[0], color="blue", label="approximate_solution")
+plt.legend()
 plt.show()
