@@ -1,7 +1,8 @@
 #セグメント木(0-index) 最小値
+n=100
+unit=0#問題によって変える
 #===セグメント木を生成===
 def seg_tree(n):#nはデータの数
-    unit=0#問題によって変える
     x=1
     while x<n:#データの数を2^aの形にする
         x*=2
@@ -10,8 +11,12 @@ def seg_tree(n):#nはデータの数
     size=x*2
     dat=[unit]*size
 
+    return dat
+
+dat=seg_tree(n)
+
 #===i番目の要素を更新をxに更新===
-def update(i, x):
+def update(i, x, dat):
     i+=n-1
     dat[i]=x
     while i>0:
