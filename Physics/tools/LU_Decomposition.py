@@ -1,5 +1,5 @@
 import numpy as np
-#LU分解 U(上三角行列の対角成分を1にする)
+#LU分解 U(上三角行列)の対角成分を1にする
 def LUD(matrix): #分解したい行列を引数、分解したL,Uを返す関数
     n=len(matrix) #n×n行列
     L=np.zeros((n, n)) #分解した下三角行列用
