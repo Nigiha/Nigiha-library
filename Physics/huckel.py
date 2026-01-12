@@ -1,8 +1,59 @@
 #行列式の計算を、LU分解を用いた方法として実装
 #永年方程式を二分法を用いて解く
 
-
 import numpy as np
+
+#-----設定-----
+n=7 #結合に参加する原子数
+combination=[ #結合の仕方をインデックスで管理
+    [0,4],
+    [4,1],
+    [1,5],
+    [5,2],
+    [2,6],
+    [6,3],
+    [3,4]
+]
+
+a=0 #coulomb積分
+b=1 #共鳴積分
+
+
+#-----行列生成-----
+def matrix(e):
+    matrix=np.zeros((n,n))
+    for i in range(n):
+        matrix[i][i]=a-e
+    for comb in combination:
+        index1, index2=comb
+        matrix[index1][index2]=b
+        matrix[index2][index1]=b
+    return matrix
+
+# def ethylene(e):
+#     return [
+#         [a-e, b],
+#         [b, a-e]
+#     ]
+
+# def butadiene(e):
+#     return [
+#         [a-e, b,   0,   0],
+#         [b,   a-e, b,   0],
+#         [0,   b,   a-e, b],
+#         [0,   0,   b,   a-e]
+#     ]
+
+# def toluene(e):
+#     return [
+#         [a-e, 0, 0, 0, b, 0, 0],
+#         [0, a-e, 0, 0, 1, 1, 0],
+#         [0, 0, a-e, 0, 0, b, b],
+#         [0, 0, 0, a-e, b, 0, b],
+#         [b, b, 0, b, a-e, 0, 0],
+#         [0, b, b, 0, 0, a-e, 0],
+#         [0, 0, b, b, 0, 0, a-e]
+#     ]
 
 
 #-----LU分解-----
@@ -53,43 +104,14 @@ def det(matrix):
         total_det*=L[i][i]
     return total_det
 
-#-----   -----
-a=0 #coulomb積分
-b=1 #共鳴積分
-
-def ethylene(e):
-    return [
-        [a-e, b],
-        [b, a-e]
-    ]
-
-def butadiene(e):
-    return [
-        [a-e, b,   0,   0],
-        [b,   a-e, b,   0],
-        [0,   b,   a-e, b],
-        [0,   0,   b,   a-e]
-    ]
-
-def toluene(e):
-    return [
-        [a-e, 0, 0, 0, b, 0, 0],
-        [0, a-e, 0, 0, 1, 1, 0],
-        [0, 0, a-e, 0, 0, b, b],
-        [0, 0, 0, a-e, b, 0, b],
-        [b, b, 0, b, a-e, 0, 0],
-        [0, b, b, 0, 0, a-e, 0],
-        [0, 0, b, b, 0, 0, a-e]
-    ]
-
 
 #-----二分法-----
-region=[-10.0, 10.0]
+region=[-10.0, 10.0] #探索範囲
 step=0.1
-eps=1e-4
+eps=1e-4 #許容誤差
 
 def judge(u:float, v:float):
-    return det(toluene(u))*det(toluene(v))
+    return det(matrix(u))*det(matrix(v))
 
 def bisection(left, right): #(left, right)内の零点を探索
     dx=right-left
@@ -101,7 +123,7 @@ def bisection(left, right): #(left, right)内の零点を探索
             left=x
         dx=abs(right-left)
     else:
-        print('e={:10.6f}'.format(x))
+        print('{:10.6f} hartree'.format(x))
 
 def main():
     x0=region[0]
