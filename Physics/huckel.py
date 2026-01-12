@@ -88,27 +88,26 @@ region=[-10.0, 10.0]
 step=0.1
 eps=1e-4
 
-def judge(a:float, b:float):
-    return det(toluene(a))*det(toluene(b))
+def judge(u:float, v:float):
+    return det(toluene(u))*det(toluene(v))
 
-def bisection(a, b):
-    dx=b-a
-    while dx > eps:
-        x=(b+a)/2
-        if judge(x, a)<0:
-            b=x
-        else:
-            a=x
-        dx=abs(b-a)
+def bisection(left, right): #(left, right)内の零点を探索
+    dx=right-left
+    while dx > eps: #dxが誤差範囲に収まるまで
+        x=(right+left)/2
+        if judge(x, left)<0: #(x, left)内に零点があるならその範囲を探索
+            right=x
+        else: #(x, left)外にあるなら範囲外(right, x)を探索
+            left=x
+        dx=abs(right-left)
     else:
         print('e={:10.6f}'.format(x))
 
 def main():
     x0=region[0]
-    while x0 <= region[1]-step:
-        if judge(x0, x0+step) < 0:
-            # print("Rough Search from {:4.2f} to {:4.2f}".format(x0, x0+step))
-            bisection(x0, x0+step)
+    while x0 <= region[1]-step: #探索範囲内をstepずつシフト
+        if judge(x0, x0+step) < 0: #step内に零点があれば
+            bisection(x0, x0+step) #二分法で零点を探す
         x0+=step
 
 main()
