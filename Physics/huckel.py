@@ -92,7 +92,6 @@ def judge(a:float, b:float):
     return det(toluene(a))*det(toluene(b))
 
 def bisection(a, b):
-    n=0
     dx=b-a
     while dx > eps:
         x=(b+a)/2
@@ -101,8 +100,6 @@ def bisection(a, b):
         else:
             a=x
         dx=abs(b-a)
-        # print("Search from {:4.2f}to{:4.2f}. F(x)={:>10.3e}".format(x, dx, f1(x)))
-        n+=1
     else:
         print('e={:10.6f}'.format(x))
 
